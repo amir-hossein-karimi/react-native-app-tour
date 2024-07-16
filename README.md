@@ -24,7 +24,7 @@ This library is a React Native bridge around native app tour libraries. It allow
 
 ## 📖 Getting started
 
-`$ npm install react-native-app-tour --save`
+`$ npm install @amir-hossein-karimi/react-native-app-tour --save`
 
 > Supported react-native 61 and above
 
@@ -37,7 +37,7 @@ This library is a React Native bridge around native app tour libraries. It allow
 ```
   use_native_modules!
 
-  pod 'RNAppTour', :path => '../node_modules/react-native-app-tour/ios'
+  pod 'RNAppTour', :path => '../node_modules/@amir-hossein-karimi/react-native-app-tour/ios'
 
   use_frameworks! :linkage => :static
 
@@ -81,7 +81,7 @@ allprojects {
 
 - If you install this package and get an error saying postinstall failed this most likely means
   - You are trying to run install modules from outside of project root (react-native-git-upgrade)
-    - FIX: remove react-native-app-tour from package.json and rerun
+    - FIX: remove @amir-hossein-karimi/react-native-app-tour from package.json and rerun
   - Pods version is out of date.
     - `pod repo update`
 - If you encounter `File not found in iOS` issue while setup, please refer [ISSUE - 3](https://github.com/amir-hossein-karimi/react-native-app-tour/issues/3) issue which might help you in order to resolve.
@@ -205,10 +205,8 @@ However, if you get some profit from this or just want to encourage me to contin
 - Starring and sharing the projects you like 🚀
 - If you're feeling especially charitable, please follow [amir-hossein-karimi](https://github.com/amir-hossein-karimi) on GitHub.
 
-  <a href="https://www.buymeacoffee.com/amir-hossein-karimi" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+  <a href="https://www.buymeacoffee.com/prscX" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
   Thanks! ❤️
-  <br/>
-  [amir-hossein-karimi.github.io](https://amir-hossein-karimi.github.io)
-  <br/>
+
   </ Pranav >

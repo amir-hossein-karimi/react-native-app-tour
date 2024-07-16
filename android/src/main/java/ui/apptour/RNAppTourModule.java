@@ -2,11 +2,16 @@ package ui.apptour;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.util.Log;
 import androidx.annotation.Nullable;
+import android.app.Dialog;
 import android.view.View;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.AssetManager;
 
@@ -14,10 +19,12 @@ import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.UIBlock;
 import com.facebook.react.uimanager.NativeViewHierarchyManager;
 
+import com.facebook.common.internal.Objects;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactContext;
 
 import com.facebook.react.bridge.Arguments;
@@ -60,6 +67,8 @@ public class RNAppTourModule extends ReactContextBaseJavaModule {
         final Activity activity = this.getCurrentActivity();
         final List<TapTarget> targetViews = new ArrayList<TapTarget>();
 
+        final Dialog dialog = new AlertDialog.Builder(activity).create();
+
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -82,7 +91,7 @@ public class RNAppTourModule extends ReactContextBaseJavaModule {
                             targetViews.add(tapTarget);
                         }
 
-                        TapTargetSequence tapTargetSequence = new TapTargetSequence(activity).targets(targetViews);
+                        TapTargetSequence tapTargetSequence = new TapTargetSequence(dialog).targets(targetViews);
                         tapTargetSequence.considerOuterCircleCanceled(true);
 
                         tapTargetSequence.listener(new TapTargetSequence.Listener() {
@@ -92,6 +101,11 @@ public class RNAppTourModule extends ReactContextBaseJavaModule {
                                 params.putBoolean("finish", true);
 
                                 sendEvent(getReactApplicationContext(), "onFinishSequenceEvent", params);
+
+                                // dismiss dialog on finish
+                                if (dialog != null && dialog.isShowing()) {
+                                    dialog.dismiss();
+                                }
                             }
 
                             @Override
@@ -120,6 +134,7 @@ public class RNAppTourModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void ShowFor(final int view, final ReadableMap props, final Promise promise) {
         final Activity activity = getCurrentActivity();
+        final Dialog dialog = new AlertDialog.Builder(activity).create();
 
         activity.runOnUiThread(new Runnable() {
             @Override
@@ -139,7 +154,29 @@ public class RNAppTourModule extends ReactContextBaseJavaModule {
 
                         TapTarget targetView = generateTapTarget(refView, props);
 
-                        TapTargetView.showFor(activity, targetView, new TapTargetViewListener(props));
+                        TapTargetView.showFor(dialog, targetView, new TapTargetViewListener(props){
+                            @Override
+                            public void onTargetClick(TapTargetView view) {
+                                super.onTargetClick(view);
+
+                                WritableMap params = Arguments.createMap();
+                                sendEvent(getReactApplicationContext(), "onShowTargetClick", params);
+                            }
+
+                            @Override
+                            public void onOuterCircleClick(TapTargetView view) {
+                                super.onOuterCircleClick(view);
+
+                                WritableMap params = Arguments.createMap();
+                                sendEvent(getReactApplicationContext(), "onShowCircleClick", params);
+                            }
+
+                            @Override
+                            public void onTargetDismissed(TapTargetView view, boolean userInitiated) {
+                                WritableMap params = Arguments.createMap();
+                                sendEvent(getReactApplicationContext(), "onShowTargetDismissed", params);
+                            }
+                        });
                     }
                 });
             }
